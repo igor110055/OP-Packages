@@ -40,9 +40,10 @@ jobs:
     - name: 同步上游
       run: |
         
-        # 删除git缓存以及feeds的文件夹
+        # 删除git缓存
         git rm -r --cache * >/dev/null 2>&1 &
-        rm -rf ./ >/dev/null 2>&1
+        rm -rf `find ./* -maxdepth 0 -type d ! -name "diy"` >/dev/null 2>&1
+        #rm -rf ./ >/dev/null 2>&1
         ##mkdir feeds && cd feeds
 
         # miniupnpd支持强行映射
@@ -144,11 +145,11 @@ jobs:
         git commit -m "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} Sync $(date +%Y-%m-%d" "%H:%M:%S)"
         git push -f
 
-    - name: 触发编译
-      uses: peter-evans/repository-dispatch@v1
-      with:
-        token: ${{ secrets.SECRET_TOKEN }}
-        event-type: Compile-IPK
+    #- name: 触发编译
+    #  uses: peter-evans/repository-dispatch@v1
+    #  with:
+    #    token: ${{ secrets.SECRET_TOKEN }}
+    #    event-type: Compile-IPK
 
     - name: 删除历史Action记录
       uses: Mattraks/delete-workflow-runs@main
