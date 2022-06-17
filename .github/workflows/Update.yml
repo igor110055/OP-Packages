@@ -42,7 +42,7 @@ jobs:
         
         # 删除git缓存以及feeds的文件夹
         git rm -r --cache * >/dev/null 2>&1 &
-        rm -rf ./feeds >/dev/null 2>&1
+        rm -rf ./ >/dev/null 2>&1
         ##mkdir feeds && cd feeds
 
         # miniupnpd支持强行映射
