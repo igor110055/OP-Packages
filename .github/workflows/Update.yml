@@ -10,9 +10,13 @@ on:
   push:
     branches:
       - main
-    paths:
-      - '.github/workflows/upstream.yml'
-      - '.gitignore'
+    #paths:
+    #  - '.github/workflows/upstream.yml'
+    #  - '.gitignore'
+   
+  repository_dispatch:
+  workflow_dispatch:
+  
   schedule:
     - cron: 0 0 * * *
 
