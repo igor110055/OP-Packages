@@ -1,11 +1,5 @@
-#
-# This is free software, lisence use MIT.
-# 
-# 
-# <https://github.com/kiddin9/openwrt-packages>
-#
+name: Update
 
-name: upstream
 on: 
   repository_dispatch:
   workflow_dispatch:
@@ -17,50 +11,58 @@ on:
 # 点赞☆Star触发编译
 #  watch:
 #    types: [started]
-    
 
 jobs:
-  merge:
-    if: github.event.repository.owner.id == github.event.sender.id
-    runs-on: Ubuntu-20.04
-
+  Update:
+    runs-on: ubuntu-20.04
     steps:
-    - name: Checkout
+    - name: Clone Repository
       uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
 
-    - name: Set git identity
+    - name: Set git
       run : |
-        git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git config --global user.name "github-actions[bot]"
         sudo timedatectl set-timezone "Asia/Shanghai"
 
-    - name: Syn upstream
+    - name: Update
       run: |
-        shopt -s extglob
-        git rm -r --cache * >/dev/null 2>&1 &
-        rm -rf `find ./* -maxdepth 0 -type d ! -name "diy"` >/dev/null 2>&1
-        function git_clone() (
-          git clone --depth 1 $1 $2 || true
-        )
-        function git_sparse_clone() (
-          branch="$1" rurl="$2" localdir="$3" && shift 3
-          git clone -b $branch --depth 1 --filter=blob:none --sparse $rurl $localdir
-          cd $localdir
-          git sparse-checkout init --cone
-          git sparse-checkout set $@
-          mv -n $@ ../
-          cd ..
-          rm -rf $localdir
-          )
-        function mvdir() {
-        mv -n `find $1/* -maxdepth 0 -type d` ./
-        rm -rf $1
-        }
-        ( 
-         
-        git_clone https://github.com/zzsj0928/luci-app-pushbot 
+
+        rm -rf ./luci-app-pushbot
+        rm -rf ./luci-app-serverchan
+        rm -rf ./luci-app-easymesh
+        rm -rf ./luci-app-ikoolproxy
+        rm -rf ./luci-app-kodexplorer
+        rm -rf ./theme-18.06/luci-theme-edge
+        rm -rf ./theme-18.06/luci-theme-infinityfreedom
+        rm -rf ./theme-18.06/luci-theme-neobird
+        rm -rf ./lisaac/*  
+        rm -rf ./linkease/app-store-ui
+        rm -rf ./linkease/ddnsto
+        rm -rf ./linkease/linkease
+        rm -rf ./linkease/quickstart
+        rm -rf ./linkease/luci-app-ddnsto
+        rm -rf ./linkease/luci-app-linkease
+        rm -rf ./linkease/luci-app-quickstart
+        rm -rf ./linkease/luci-app-store
+        rm -rf ./linkease/luci-app-ota
+        rm -rf ./jerrykuku/*
+        rm -rf ./op-oaf
+        rm -rf ./op-fileBrowser/*
+        rm -rf ./op-aliyun/*
+        rm -rf ./op-socat/socat
+        rm -rf ./op-mosdns/*
+        rm -rf ./op-alist/*
+        rm -rf ./patch/wall
+        rm -rf ./patch/wall-luci
+        
+        ##自修改
+        rm -rf ./op-adguardhome/*
+        rm -rf ./luci-app-adguardhome
+        rm -rf ./theme-18.06/luci-theme-opentomcat
+        
+ 
+        git clone https://github.com/zzsj0928/luci-app-pushbot ./luci-app-pushbot
         git clone https://github.com/tty228/luci-app-serverchan ./luci-app-serverchan
         git clone https://github.com/ntlf9t/luci-app-easymesh ./luci-app-easymesh
         git clone https://github.com/yaof2/luci-app-ikoolproxy ./luci-app-ikoolproxy
@@ -121,15 +123,19 @@ jobs:
         #svn co https://github.com/sirpdboy/sirpdboy-package/trunk/adguardhome ./op-adguardhome/adguardhome
         git clone https://github.com/kiddin9/openwrt-adguardhome ./op-adguardhome
         svn export https://github.com/281677160/openwrt-package/trunk/luci-theme-opentomcat ./theme-18.06/luci-theme-opentomcat
-        )
     
-    
+    - name: Delete workflow runs
+      uses: GitRML/delete-workflow-runs@main
+      continue-on-error: true
+      with:
+        retain_days: 1
+        keep_minimum_runs: 3
 
     - name: Apply
       run: |
         Emoji=("🎉" "🤞" "✨" "🎁" "🎈" "🎄" "🎨" "💋" "🍓" "🍕" "🍉" "💐" "🌴" "🚀" "🛸" "🗽" "⛅" "🌈" "🔥" "⛄" "🐶" "🏅" "🦄" "🐤")
         git add .
-        git commit -m "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} Sync $(date +%Y-%m-%d" "%H:%M:%S)"
+        git commit -m "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} Sync: $(date +%Y-%m-%d" "%H:%M)"
         for pkg in $(git diff-tree --no-commit-id --name-only HEAD); do
           if [ "$(grep "PKG_RELEASE" $pkg/Makefile)" ]; then
             sed -i "s/PKG_RELEASE:=.*/PKG_RELEASE:=$(git rev-list --count master $pkg)/" $pkg/Makefile || true
@@ -138,11 +144,12 @@ jobs:
         git reset --soft HEAD^
         git add .
         git commit -m "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} Sync $(date +%Y-%m-%d" "%H:%M:%S)"
-        git push -f
-
-    - name: Delete workflow runs
-      uses: Mattraks/delete-workflow-runs@main
-      continue-on-error: true
-      with:
-        retain_days: 1
-        keep_minimum_runs: 3
+        git commit -m "Sync: $(date +%Y-%m-%d" "%H:%M)"
+        git push -f 
+    
+    
+    #- name: Apply
+    #  run: |
+    #    git add .
+    #    git commit -m "Sync: $(date +%Y-%m-%d" "%H:%M)"
+    #    git push -f 
