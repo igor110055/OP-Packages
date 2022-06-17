@@ -89,8 +89,9 @@ jobs:
         svn export https://github.com/messense/aliyundrive-fuse/trunk/openwrt/luci-app-aliyundrive-fuse ./op-aliyun/luci-app-aliyundrive-fuse
 
         
-        git clone https://github.com/xiaorouji/openwrt-passwall ./patch/wall
-        rm -rf ./patch/wall/.github
+        #git clone https://github.com/xiaorouji/openwrt-passwall ./patch/wall
+        #rm -rf ./patch/wall/.github
+        svn export https://github.com/xiangfeidexiaohuo/openwrt-packages/trunk/patch/wall ./patch/wall
         svn export https://github.com/coolsnowwolf/packages/trunk/net/redsocks2 ./patch/wall/redsocks2
         svn export https://github.com/xiaorouji/openwrt-passwall/branches/luci/luci-app-passwall ./patch/wall-luci/luci-app-passwall
         svn export https://github.com/fw876/helloworld/trunk/luci-app-ssr-plus ./patch/wall-luci/luci-app-ssr-plus
