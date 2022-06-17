@@ -6,15 +6,17 @@
 #
 
 name: upstream
-on:
-  on: 
+on: 
   repository_dispatch:
   workflow_dispatch:
 
+# 定时触发编译
   schedule:
     - cron: 0 */12 * * *
-  watch:
-    types: started
+
+# 点赞☆Star触发编译
+#  watch:
+#    types: [started]
     
 
 jobs:
