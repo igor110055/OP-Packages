@@ -123,16 +123,16 @@ jobs:
         
     - name: 删除多余文件
       run: |
-        rm -rf ./feeds/.svn
-        rm -rf ./feeds/*/.git
-        rm -rf ./feeds/*/.github
-        rm -rf ./feeds/*/.svn
-        rm -rf ./feeds/*/README.md
-        rm -rf ./feeds/*/LICENSE
+        rm -rf ./.svn
+        rm -rf ./*/.git
+        rm -rf ./*/.github
+        rm -rf ./*/.svn
+        rm -rf ./*/README.md
+        rm -rf ./*/LICENSE
 
-    - name: 解决冲突
-      run: |
-        sed -i 's#../../luci.mk#$(TOPDIR)/feeds/luci/luci.mk#g' ./feeds/*/Makefile
+    #- name: 解决冲突
+    #  run: |
+    #    sed -i 's#../../luci.mk#$(TOPDIR)/feeds/luci/luci.mk#g' ./feeds/*/Makefile
           
     - name: 提交
       run: |
